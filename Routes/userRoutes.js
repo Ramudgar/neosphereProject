@@ -24,4 +24,25 @@ router.post("/user/savedata", (req, res) => {
     });
 });
 
+// api using async await with try catch and proper error handling  using status codes and json
+router.post("/user/savedataasync", async (req, res) => {
+  const data = req.body;
+  if (!data) {
+    res.status(400).json({ msg: "Data not found", success: false });
+  }
+  try {
+    const user = new User({
+      name: data.name,
+      email: data.email,
+      role: data.role,
+      contact: data.contact,
+      age: data.age,
+    });
+    const savedUser = await user.save();
+    res.json({ msg: "Data inserted", success: true, data: savedUser });
+  } catch (e) {
+    res.status(500).json({ msg: e.message, success: false });
+  }
+});
+
 module.exports = router;
