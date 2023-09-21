@@ -24,11 +24,11 @@ const userSchema = new schema(
       type: String,
       required: [true, "Contact is required"],
       trim: true,
-      maxlength: [50, "Contact cannot be more than 50 characters"],
     },
     age: {
       type: Number,
-    },
+    }
+    
   },
   { timestamps: true }
 );
