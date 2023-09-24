@@ -105,7 +105,7 @@ router.put("/users/update/:id", async (req, res) => {
       ? data.contactNumber
       : user.contactNumber;
     const updatedUser = await user.save();
-    res.json({ msg: "Data updated", success: true, updatedUser });
+    res.status(200).json({ msg: "Data updated", success: true, updatedUser });
   } catch (error) {
     res.status(500).json({ msg: error, success: false });
   }
@@ -119,9 +119,8 @@ router.put("/users/updatedata/:id", async (req, res) => {
   if (!data) {
     return res.status(400).json({ msg: "Data not found", success: false });
   }
-
   try {
-    const user = await User.findById(user_id);
+    const user = await User.findById({ _id: user_id });
 
     if (!user) {
       return res.status(404).json({ msg: "User not found", success: false });
@@ -145,6 +144,18 @@ router.put("/users/updatedata/:id", async (req, res) => {
   } catch (error) {
     res.status(500).json({ msg: error.message, success: false });
   }
+});
+
+// api to delete user data by user id
+
+router.delete("/users/delete/:id", (req, res) => {
+  User.findByIdAndDelete({ _id: req.params.id })
+    .then((data) => {
+      res.json({ msg: "Data deleted", success: true, data });
+    })
+    .catch((error) => {
+      res.status(500).json({ msg: error, success: false });
+    });
 });
 
 module.exports = router;
