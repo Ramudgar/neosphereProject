@@ -158,4 +158,24 @@ router.delete("/users/delete/:id", (req, res) => {
     });
 });
 
+// api to delete user data by user id using async await
+
+router.delete("/users/deletedata/:id", async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete({ _id: req.params.id });
+    res.status(200).json({ msg: "Data deleted", success: true, user });
+  } catch (error) {
+    res.status(500).json({ msg: error.message, success: false });
+  }
+});
+
+// api to delete all user by usser id
+router.delete("/deleteuser/:id", (req, res) => {
+  const user = User.findById(req.params.id);
+  if (!user) {
+    return res.status(404).json({ msg: "User not found", success: false });
+  }
+  user.deleteOne().then(() => res.json({ msg: "User deleted", success: true }));
+});
+
 module.exports = router;
