@@ -2,12 +2,6 @@ const mongoose = require("mongoose");
 const schema = mongoose.Schema;
 const userSchema = new schema(
   {
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-      maxlength: 50,
-    },
     email: {
       type: String,
       required: [true, "Email is required"],
@@ -20,15 +14,11 @@ const userSchema = new schema(
       enum: ["user", "admin", "superadmin"],
       default: "user",
     },
-    contact: {
+
+    password: {
       type: String,
-      required: [true, "Contact is required"],
-      trim: true,
+      required: [true, "Password is required"],
     },
-    age: {
-      type: Number,
-    }
-    
   },
   { timestamps: true }
 );
