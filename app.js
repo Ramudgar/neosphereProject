@@ -4,13 +4,12 @@ const port = 3000;
 const connectDB = require("./config/db");
 
 const userRoutes = require("./Routes/userRoutes");
-
+const RegisterLoginRoutes = require("./Routes/RegisterLoginRoutes");
 connectDB();
-
 app.use(express.json());
 
 app.use(userRoutes);
-
+app.use(RegisterLoginRoutes);
 
 app.listen(port, () => {
   console.log(` app listening at http://localhost:${port}`);

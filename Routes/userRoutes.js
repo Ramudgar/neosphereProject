@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/userModel");
+const auth = require("../config/auth");
 
-router.post("/user/savedata", (req, res) => {
+router.post("/user/savedata", auth.verifyUser, (req, res) => {
   const data = req.body;
 
   console.log(data);
@@ -177,6 +178,5 @@ router.delete("/deleteuser/:id", (req, res) => {
   }
   user.deleteOne().then(() => res.json({ msg: "User deleted", success: true }));
 });
-
 
 module.exports = router;
