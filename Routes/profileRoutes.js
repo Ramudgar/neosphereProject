@@ -1,40 +1,52 @@
 const express = require("express");
 const router = express.Router();
 const Profile = require("../models/profileModel");
-const User = require("../models/userModel");
+const domain = "http://localhost:5000/";
 const auth = require("../config/auth");
 const upload = require("../services/uploadServices");
-const domain = require("http://localhost:3000/");
 
-// api to save profile data
+// @route POST profile/create by taking the ref of the user
+// @desc Create a profile
+// @access Private
 router.post(
-  "/profile/savedata",
-  auth.verifyUser,
+  "/profile/create",
   upload.profileImage.single("profile_pic"),
-  (req, res) => {
+  auth.verifyUser,
+  async (req, res) => {
     const data = req.body;
-    console.log(data);
-    console.log(req.file);
     const file = req.file;
-    if (!file) {
-      return res.status(400).json({ msg: "Please upload a file" });
-    }
-    const image = domain + "public/profiles/" + file.filename;
-    const profile = new Profile({
-      user: req.userData._id,
-      name: data.name,
-      contact: data.contact,
-      age: data.age,
-      profile_pic: image,
-    });
-    profile
-      .save()
-      .then((data) => {
-        res.json({ msg: "Data inserted", success: true, data });
-      })
-      .catch((error) => {
-        res.status(500).json({ msg: error, success: false });
+
+    try {
+      const existingProfile = await Profile.findOne({ user: req.userData._id });
+
+      if (existingProfile) {
+        return res.status(400).json({ error: "Profile already exists" });
+      }
+
+      if (!file) {
+        return res.status(400).json({ error: "Please upload an image" });
+      }
+
+      const image = domain + "public/profiles/" + file.filename;
+
+      const profiledata = new Profile({
+        user: req.userData._id,
+        name: data.name,
+        contact: data.contact,
+        address: data.address,
+        profile_pic: image,
       });
+
+      await profiledata.save();
+
+      return res.status(200).json({
+        msg: "Profile created successfully",
+        profiledata,
+      });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Server Error" });
+    }
   }
 );
 

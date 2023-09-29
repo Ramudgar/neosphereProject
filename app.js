@@ -5,11 +5,13 @@ const connectDB = require("./config/db");
 
 const userRoutes = require("./Routes/userRoutes");
 const RegisterLoginRoutes = require("./Routes/RegisterLoginRoutes");
+const profileRoutes = require("./Routes/profileRoutes");
 connectDB();
 app.use(express.json());
 
 app.use(userRoutes);
 app.use(RegisterLoginRoutes);
+app.use(profileRoutes);
 
 app.listen(port, () => {
   console.log(` app listening at http://localhost:${port}`);
