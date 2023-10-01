@@ -68,6 +68,48 @@ router.get("/profile/get", auth.verifyUser, async (req, res) => {
 });
 
 
+// code for update the profile by taking the ref of the user
+// @route PUT profile/update
+// @desc Update a profile
+// @access Private
+router.put(
+  "/profile/update",
+  uploadsServices.profileImage.single("profilepic"),
+  auth.verifyUser,
+  async (req, res) => {
+    const data = req.body;
+    const file = req.file;
+
+    try {
+      const profile = await Profile.findOne({ user: req.userData._id });
+
+      if (!profile) {
+        return res.status(400).send("Profile not found");
+      }
+      if (!file || file.length === 0) {
+        profile.name = data.name ? data.name : profile.name;
+        profile.contact = data.contact ? data.contact : profile.contact;
+        profile.address = data.address ? data.address : profile.address;
+      } else {
+        const image = domain + "public/profile/" + file.filename;
+        profile.name = data.name ? data.name : profile.name;
+        profile.contact = data.contact ? data.contact : profile.contact;
+        profile.address = data.address ? data.address : profile.address;
+        profile.profile_pic = image ? image : profile.profile_pic;
+      }
+      const updatedProfile = await profile.save();
+      return res.json({
+        msg: "profile updated",
+        success: true,
+        updatedProfile,
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send("Server Error");
+    }
+  }
+);
+
 
 
 module.exports = router;
