@@ -67,7 +67,6 @@ router.get("/profile/get", auth.verifyUser, async (req, res) => {
   }
 });
 
-
 // code for update the profile by taking the ref of the user
 // @route PUT profile/update
 // @desc Update a profile
@@ -110,6 +109,22 @@ router.put(
   }
 );
 
-
+// code for delete the profile by taking the ref of the user
+// @route DELETE profile/delete
+// @desc Delete a profile
+// @access Private
+router.delete("/profile/delete", auth.verifyUser, async (req, res) => {
+  try {
+    const profile = await Profile.findOne({ user: req.userData._id });
+    if (!profile) {
+      return res.status(400).send("Profile not found");
+    }
+    await profile.deleteOne();
+    res.json({ msg: "profile deleted", success: true, profile });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Server Error");
+  }
+});
 
 module.exports = router;
