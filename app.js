@@ -9,6 +9,9 @@ const profileRoutes = require("./Routes/profileRoutes");
 connectDB();
 app.use(express.json());
 
+// make public folder static
+app.use("/public", express.static(__dirname + "/public"));
+
 app.use(userRoutes);
 app.use(RegisterLoginRoutes);
 app.use(profileRoutes);
