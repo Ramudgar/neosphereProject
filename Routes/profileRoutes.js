@@ -50,4 +50,24 @@ router.post(
   }
 );
 
+// code for get the profile by taking the ref of the user
+// @route GET profile/get
+// @desc Get a profile
+// @access Private
+router.get("/profile/get", auth.verifyUser, async (req, res) => {
+  try {
+    const profile = await Profile.findOne({ user: req.userData._id });
+    if (!profile) {
+      return res.status(400).send("Profile not found");
+    }
+    res.json({ msg: "profile fetched", success: true, profile });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Server Error");
+  }
+});
+
+
+
+
 module.exports = router;
